@@ -51,3 +51,319 @@ Interview Introduction (Short Answer):
 
 "Ansible is an open-source, agentless automation tool used for configuration management, application deployment, and infrastructure automation. 
 It uses SSH for communication and YAML-based playbooks to define tasks, making automation simple, scalable, and easy to maintain."
+
+
+## Ansible Advance Automation Features:-
+### Roles
+- Roles simplifies long playbooks by grouping tasks into smaller playbooks.
+OR
+The Roles are the way of breaking a playbook into multiple playbook files. This simplifies writing complex playbooks and it makes them easier to reuse
+- Writing ansible code to manage the same services for multiple environments  create more complexity and it becomes difficult to manage everything in one ansible playbook. Also sharing code among other teams become difficult. That is where Ansible Role helps solve these problems.
+- Roles are like templates that are most of the time static and can be called by the playbooks.
+- roles allow the entire configuration to be grouped in:
+- - Tasks
+  - modules
+  - Variables
+  - Handleers 
+<img width="1356" height="744" alt="image" src="https://github.com/user-attachments/assets/956ab770-5aa7-463e-9dcc-44d48f0fec4a" />
+> in order to better understanding of roles let's take an example here is a list of tasks that you want to performm on east webservers. first you need to install apache webserver and in second task you need to start the service and in third task you need to do it's entry in to firewalld and allow the service on the firewall.
+> Now i have another list of task for our west web servers and for our west webservers we need to perform only two tasks first install httpd packages and second start the httpd service.
+> All right , so this is what i wanted to do out and wanted to do with one playbook. then you will it has a list of 6 task. which is difficult to manage and complex
+> So let's say if you have another group of remote clients, let's call it north webservers. and in that you only want to sart a webservice call so you need to mention a new task call seventh task
+> so this things make your playbook a lot longer, and ofcource it 's hard to manage as well that's we will use the roles to make our playbook look a lot neate, cleaner, organized and easy to use.
+
+#Screenshot
+
+- so how are we going to transform them into different roles?
+> So we will make a role playbook out of this
+> so the playbook will be the same as it as we would write any playbook, but we will put them in the roles directory. So it will have setup server as a name and the task will be install a httpd package and start and enable httpd service enable the http port in firewall and restart the firewall.
+
+```yaml
+---
+- name: Setup full httpd webserver
+  tasks:
+  - name: Install httpd packages
+    yum:
+      name: httpd
+      state: present
+  - name: Start httpd service
+    service:
+      name: httpd
+      state: strated
+  - name: enabled httpd service
+    firewalld:
+      name: http
+      permanent: true
+      state: enabled
+  - name: Restart firewalld
+    service:
+      name: firewalld
+      state: restarted
+```
+> and for another part of this playbook for only install httpd packages and start and enable the service we create an another role.
+```yaml
+---
+- name: Setup full httpd webserver
+  tasks:
+  - name: Install httpd packages
+    yum:
+      name: httpd
+      state: present
+  - name: Start httpd service
+    service:
+      name: httpd
+      state: strated
+```
+>Once we have these roles created, then we could write our final playbook and this is very simplified version of playbook
+
+```yml
+---
+- name: Full install
+  hosts: east-webservers
+  roles:
+  - fullinstall
+- name: Basic install
+  hosts: west-webserver
+  roles:
+  - basicinstall
+```
+- Please note roles can be grouped by type of servers, type of applications or organizational requirement.
+- To crate roles.
+- - Go to ControlNodes
+  - cd /etc/ansible/roles
+  - Make directory for each role
+  - - e.g mkdir [rolenames]
+    - mkdir basicinstall
+    - mkdir fullinstall
+    - mkdir appservers
+    - - Create sub-directory tasks within each directory
+      - mkdir basicinstall/tasks
+      - mkdir fullinstall/tasks
+      - mkdir appservers/tasks
+      - - Create yml files within these sub-directories
+        - touch basicinstall/tasks/main.yml
+        - touch fullinstall/tasks/main.yml
+        - touch appservers/tasks/main.yml
+        - - vim basicinstall/tasks/main.yml
+          - vim fullinstall/tasks/main.yml
+```yml
+---
+- name: Setup full httpd webserver
+  tasks:
+  - name: Install httpd packages
+    yum:
+      name: httpd
+      state: present
+  - name: Start httpd service
+    service:
+      name: httpd
+      state: strated
+```
+      
+```yml
+---
+- name: Setup full httpd webserver
+  tasks:
+  - name: Install httpd packages
+    yum:
+      name: httpd
+      state: present
+  - name: Start httpd service
+    service:
+      name: httpd
+      state: strated
+  - name: enabled httpd service
+    firewalld:
+      name: http
+      permanent: true
+      state: enabled
+  - name: Restart firewalld
+    service:
+      name: firewalld
+      state: restarted
+```
+> in Playbook directory we crate a playbook that name well be byrole.yml , in this playbook we use that role which we have just created
+
+- vim /etc/ansible/playbooks/byrole.yml
+```yml
+---
+- name: Full install
+  hosts: all
+  roles:
+  - fullinstall
+
+- name: Basic install
+  hosts: localhosts
+  roles:
+  - basicinstall         
+```
+
+# ROLES BY APPLICATION
+```yml
+---
+- name: Setup full httpd webserver             
+  tasks:                                                         
+  - name: Install httpd packages                  ───────────────────│
+    yum:                                                             │
+      name: httpd                                                    ├─────  this is first task that would install packages of httpd
+      state: present                              ───────────────────│
+  - name: Start TIme Packages                     ───────────────────│
+    yum:                                                             │
+      name: ntpd  or chrony                                          ├───── this is second task will install time packages 
+      state: present                              ───────────────────│
+
+ - name: Start DNS service                        ───────────────────│
+    yum:                                                             │
+      name: named                                                    ├───── this is second task will install time packages 
+      state: present                              ───────────────────│
+```
+---
+for this what could we do 
+- To create roles
+- - Go to ContralNode
+  - cd /etc/ansible/roles
+- Make directory for each role
+- - mkdir apache
+  - mkdir ntpd
+  - mkdir named
+- Create sub-directory tasks within each directory
+- - mkdir apache/tasks
+  - mkdir ntpd/tasks
+  - mkdir named/tasks
+- Create yml files within these sub-directories
+- - touch apache/tasks/main.yml
+  - touch ntpd/tasks/main.yml
+  - touch named/tasks/main.yml
+
+> once we have done that simply write our simple short and sweet playbook and that would be defining of course the YAML formal.
+```
+---
+- name: Install Packages
+  hosts: all
+  roles:
+  - apache
+  - ntpd
+  - named
+```
+
+## Roles on Ansible Galaxy
+- You can find a ton of resources on roles through Ansible galaxy.
+- You can download pre-defined or pre-written roles from the Ansible galaxy.
+- [https://galaxy.ansible.com/ui/](https://galaxy.ansible.com/ui/)
+
+# Ansible Tags
+- Tags are the reference or aliases to a task in a playbook
+- Instead of running an entire Ansible playbook, use tags to target a specific tasks you need to run.
+```
+# vim httpdbytags.yml
+---
+- name: Setup Apache server
+  hosts: all
+  tasks:
+  - name: Install httpd
+    yum:
+      name: httpd
+      state: present
+    tags: i-httpd
+- name: Start httpd
+  service:
+    name: httpd
+    state: started
+  tags: s-httpd
+```
+- To run the perticular task using tags
+```
+ ansible-playbook httpdbytags.yml -t i-httpd
+```
+```
+ ansible-playbook httpdbytags.yml -t s-httpd
+```
+- To list tags in a playbook
+```
+# ansible-playbook httpdbytags.yml --list-tags
+```
+- To skip a task using tag
+```
+# ansible-playbook httpbytags.yml --skip-tags i-httpd
+```
+- We can use "task option" to start a playbook at a specific task
+```
+# ansible-playbook yamlfile.yml --start-at-task 'Task name'
+# absible-playbook httpdbytags.yml --start-at-task 'Install httpd'
+```
+# Variables
+- Variables like containers that hold the defined value which can be used repetitively.
+### IMPORTANT THINGS TO REMEMBER ABOUT VARIABLES!
+- Name can include letters, numbers and underscore
+- Name should always start with a letter
+- Cannot have a spaces, dots(.) or hypen(-) in variable name
+- Variable can be defined inside of inventory files as well
+
+### Example:-
+```
+---
+- name: Install some package
+  hosts: all
+  vars:
+    sespackage: sesquipedalianism
+
+  tasks:
+  - name: Package install
+    yum:
+      name: "{{ sespackage }}"
+      state: present
+
+  - name: Start service
+    service:
+      name: "{{ sespackage }}"
+      state: started
+```
+
+## Variables in Inventory Files:-
+```
+# Ansible Inventory File in INI Format
+
+[webservers]
+# Host variables defined directly next to the server names
+://example.com ansible_host=192.168.1.10 http_port=80
+://example.com ansible_host=192.168.1.11 http_port=8080
+
+[dbservers]
+://example.com ansible_host=192.168.1.20 max_connections=100
+
+[all:vars]
+# Global variables that apply to every single host in this inventory
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ntp_server=pool.ntp.org
+
+```
+```
+---
+# Ansible Inventory File in YAML Format
+all:
+  hosts:
+    # Global hosts can go here if they do not belong to a specific group
+  children:
+    webservers:
+      hosts:
+        ://example.com:
+          ansible_host: 192.168.1.10
+          http_port: 80
+        ://example.com:
+          ansible_host: 192.168.1.11
+          http_port: 8080
+    dbservers:
+      hosts:
+        ://example.com:
+          ansible_host: 192.168.1.20
+          max_connections: 100
+  vars:
+    # Global variables that apply to all groups
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    ntp_server: pool.ntp.org
+...
+```
+
+# Handlers:-
