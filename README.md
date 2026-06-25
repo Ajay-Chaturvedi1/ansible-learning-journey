@@ -444,3 +444,14 @@ vim testbyvault.yml
 ansible-vault encrypt testbyvault.yml
 ```
 
+- Strings/words can be encrypted within a playbook.
+```
+ansible-vault encrypt_string httpd
+```
+```
+ansible-vault create/encrypt outputbystring.yml
+```
+---
+
+screenshot
+---
