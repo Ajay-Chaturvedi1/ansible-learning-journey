@@ -367,3 +367,80 @@ all:
 ```
 
 # Handlers:-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Ansible Vault:- 
+- Ansible can automate tasks for teams such as:
+- - Hardware
+  - Operating Systems
+  - Virtualization
+  - Database or Storage
+  - Applications/Software etc.
+
+- Oftentimes you have to share Ansible code with these groups over the network and anything you share over network has a risk to end up in wrong hands.
+- It is best practice to use Ansible vault feature which will password protect your code.
+- yaml file with ansible-vault
+```
+ansible-vault create httpbyvault.yml
+```
+> It will ask about password, provide the password and confirm that then after you will enter in VI editor write your playbook and save file.
+```
+---
+- name: Install httpd package
+  hosts: localhost
+
+  tasks:
+  - name: Install package
+    yum:
+        name: httpd
+        state: present
+```
+- If you run ansible-vault playbook as we run another playbooks it will show an error.
+```
+ansible-playbook httpbyvault.yml = ERROR!
+```
+
+- To run vault yaml file
+```
+ansible-playbook httpbyvault.yml --ask-vault-pass
+```
+
+- You can not see vault file by using simple cat command, If you want to view vault yaml file, 
+```
+ansible-vault view httpbyvault.yml
+```
+
+- To edit an existing vaulted yaml file.
+  ```
+  ansible-vault edit httpbyvault.yml
+  ```
+
+- To get a list of options.
+```
+ansible-vault --help
+```
+
+- httpbyvault.yaml file was created with ansible-vault, what about exiting files???
+> To convert simple playbooks into vault playbooks use this command.
+```
+vim testbyvault.yml
+```
+```
+ansible-vault encrypt testbyvault.yml
+```
+
