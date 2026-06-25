@@ -455,3 +455,128 @@ ansible-vault create/encrypt outputbystring.yml
 
 screenshot
 ---
+
+# Ansible Management Tools
+- Ansible management tool provides centralized web interface to manage your playbooks, inventories and everything you do through a command line.
+- These tools also manage multiple Ansible control nodes
+- These are 2 Ansible Management tools.
+- - Ansible AWX (Free)
+  - Ansible Tower (Lincensed product)
+
+## Ansible AWX 
+- AWX stands for Ansible WorkX
+- AWX is a web application that provides a user interface, REST API, and task engine for Ansible
+- The AWX allows you to manage Ansible playbooks, inventories, run reports and schedule jobs.
+- Ansible AWX is an open-source, community driven management tool.
+- It is the upstream product, meaning all the chages are done on AWX first before it get to Ansible Tower.
+- The AWX Project is hosted on GitHuband RedHat welcomes community contributions.
+- The AWX project uses GitHub for its issue tracking as well. You can file your issues here:
+- - [https://github.com/ansible/awx/issues](https://github.com/ansible/awx/issues)
+  - RedHat does **NOT** recommend **AWX** for production environment.
+ 
+### Pros:-
+- Full enterprise features and functionality of Tower.
+- This is available for free download and use.
+- Not limited the number of nodes to be added.
+- Great for POC/dev/lab or QA environments.
+
+### Cons:-
+- No technical support by RedHat.
+- Multiple release in a single day are possible.
+- Not recommended by RedHat to be used in production environment.
+
+## Ansible AWX Install (Please note: AWX is deployed from the docker containers)
+- Update the system
+```
+yum update -y
+```
+
+- Reboot
+```
+reboot
+```
+
+- Install epel-release repository
+ ```
+yum install epel-release
+ ```
+
+- Install additional packages
+```
+dnf install git gcc gcc-c++ ansible nodejs gettext device-mapper-persistent-data lvm2 bzip2 python3-pip
+```
+
+- Add docker repository
+```
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+```
+
+- Install Docker
+```
+dnf install docker-ce --nobest -y
+```
+```
+dnf install docker-ce --nobest --allowerasing
+```
+
+- Check Docker version
+```
+docker --version
+```
+
+- start docker
+```
+systemctl start docker
+```
+
+- Enable docker at boot
+```
+systemctl enable docker
+```
+
+- Install docker-compose
+```
+pip3 install docker-compose
+```
+
+- Verify the docker-compose version
+```
+docker-compose --version
+```
+
+- Set python command to use python3
+```
+alternatives --set python /usr/bin/python3
+```
+
+- Download the latest version of Ansible AWX from the Git Hub repositoy
+```
+git clone https://github.com/ansible/awx
+```
+
+- Generate a secret key for encryption fo the inventory file and copy the output to a text file.
+```
+openssl rand -base64 30
+```
+
+- Change directory to and edit inventory file
+```
+awx/installer
+or
+awx/tools/docker-compose
+
+vim inventory
+```
+> in this file you suppose to change secret_key with that key what you get when you was run openssl command
+- Add or modify the following parameters
+- create directory for postgress
+```
+mkdir /var/lib/pgdocker
+```
+
+- Install AWX
+```
+ansible-playbook -i inventory install.yml
+```
+
+# Ansible Tower:-
