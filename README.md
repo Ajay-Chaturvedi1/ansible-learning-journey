@@ -596,3 +596,42 @@ ansible-playbook -i inventory install.yml
   - You may need more than 10 nodes for a dev/POC environment.
   - May be overkill for what you are trying to do.
 
+# Ansible Additional Commands:-
+- Ansible software comes with additional resources and we can utilize those resources through built-in commands comes with Ansible software.
+- Following are the list of Additional Ansible commands :
+- - ansible-config
+  - - Shows or modify Ansible configuration
+    - Not all configuration options are present in the command line, just the ones deemed most useful or common. Settings in the command line will override those passed through the configuration file and the environment.
+  - ansible-connection
+  - - Connection command for the remote clients.
+  - ansible-console
+  - - Allows fo rrunning ad-hoc tasks against a chosen invetory from a nice shell with built-in tab completion
+    - It supports serveral commands, and you can modify its configuration at runtime
+    - You can run name of the listed command followed by help
+    - - E.g. # help dnf
+    - To copy a file on the remote client = # cp /tmp/ans5 /home/iafzal
+    - - > this command will run of client machine and copy from that /tmp directory to /home directory
+    - Certain commands are misleading e.g = cd which changes the hosts instead of changing the diretory
+  - ansible-doc
+  - - You can access manuals on plug-ins and modules through this command
+    - # ansible-doc -l (To list all moudles)
+  - ansible-galaxy
+  - - command to manage Ansible roles in shared repositories, the default of which is Ansible Galaxy [https://galaxy.ansible.com](https://galaxy.ansible.com)
+> just type **ansible** on terminal this all commands will be showing there
+ - ansible-inventory
+ - - Using the ansible-invetory command provides you with details of your host invetory files
+   - It can be useful if you want to get an idea of how your hosts are grouped. For example, run the following:
+   - ```
+     ansible-inventory -i hosts --graph 
+     ```
+   - To get a full list of hosts in hosts file
+   - ```
+     ansible-inventory --list
+     ```
+  - **ansible-pull**
+  - A mode called 'ansible-pull' can also invert the system and have systems 'phone home' via scheduled git checkouts to pull configuration directives from a central repository
+
+# Ansible Documentation:-
+[https://docs.ansible.com/](https://docs.ansible.com/)
+[https://docs.ansible.com/projects/ansible/latest/](https://docs.ansible.com/projects/ansible/latest/)
+[www.ansible.com/resources](www.ansible.com/resources)
