@@ -579,4 +579,20 @@ mkdir /var/lib/pgdocker
 ansible-playbook -i inventory install.yml
 ```
 
+> when you have completed AWX installation , open any browser and put that servers ip on AWX installed then a desbord will opened, So from anything you do from command line you can do from dashboard.
+
 # Ansible Tower:-
+- Ansible Tower is a web-based dashboard and enterprise management hub for Ansible, designed to centralize and control IT automation across an entire organization. It provides a visual interface, role-based access control (RBAC), job scheduling, and graphical inventory management to help teams scale their Ansible playbooks securely.
+> (Note: Red Hat has transitioned the commercial downstream version of Ansible Tower into the Red Hat Ansible Automation Platform, while its upstream open-source project is known as AWX).
+
+- Pros
+- - 24hrs full technical support
+  - Release cycles
+  - Fully tested for quality and engineering issues before release
+  - Install/upgrades are well-documented and supported
+
+- Cons:
+- - Expensive
+  - You may need more than 10 nodes for a dev/POC environment.
+  - May be overkill for what you are trying to do.
+
