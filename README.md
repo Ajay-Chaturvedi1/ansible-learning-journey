@@ -236,7 +236,7 @@ for this what could we do
   - touch named/tasks/main.yml
 
 > once we have done that simply write our simple short and sweet playbook and that would be defining of course the YAML formal.
-```
+```yml
 ---
 - name: Install Packages
   hosts: all
@@ -254,7 +254,7 @@ for this what could we do
 # Ansible Tags
 - Tags are the reference or aliases to a task in a playbook
 - Instead of running an entire Ansible playbook, use tags to target a specific tasks you need to run.
-```
+```yml
 # vim httpdbytags.yml
 ---
 - name: Setup Apache server
@@ -272,22 +272,22 @@ for this what could we do
   tags: s-httpd
 ```
 - To run the perticular task using tags
-```
+```bash
  ansible-playbook httpdbytags.yml -t i-httpd
 ```
-```
+```bash
  ansible-playbook httpdbytags.yml -t s-httpd
 ```
 - To list tags in a playbook
-```
+```bash
 # ansible-playbook httpdbytags.yml --list-tags
 ```
 - To skip a task using tag
-```
+```bash
 # ansible-playbook httpbytags.yml --skip-tags i-httpd
 ```
 - We can use "task option" to start a playbook at a specific task
-```
+```bash
 # ansible-playbook yamlfile.yml --start-at-task 'Task name'
 # absible-playbook httpdbytags.yml --start-at-task 'Install httpd'
 ```
@@ -300,7 +300,7 @@ for this what could we do
 - Variable can be defined inside of inventory files as well
 
 ### Example:-
-```
+```yaml
 ---
 - name: Install some package
   hosts: all
@@ -320,7 +320,7 @@ for this what could we do
 ```
 
 ## Variables in Inventory Files:-
-```
+```xml
 # Ansible Inventory File in INI Format
 
 [webservers]
@@ -338,7 +338,7 @@ ansible_ssh_private_key_file=~/.ssh/id_rsa
 ntp_server=pool.ntp.org
 
 ```
-```
+```yml
 ---
 # Ansible Inventory File in YAML Format
 all:
@@ -395,11 +395,11 @@ all:
 - Oftentimes you have to share Ansible code with these groups over the network and anything you share over network has a risk to end up in wrong hands.
 - It is best practice to use Ansible vault feature which will password protect your code.
 - yaml file with ansible-vault
-```
+```bash
 ansible-vault create httpbyvault.yml
 ```
 > It will ask about password, provide the password and confirm that then after you will enter in VI editor write your playbook and save file.
-```
+```yaml
 ---
 - name: Install httpd package
   hosts: localhost
@@ -411,44 +411,44 @@ ansible-vault create httpbyvault.yml
         state: present
 ```
 - If you run ansible-vault playbook as we run another playbooks it will show an error.
-```
+```bash
 ansible-playbook httpbyvault.yml = ERROR!
 ```
 
 - To run vault yaml file
-```
+```bash
 ansible-playbook httpbyvault.yml --ask-vault-pass
 ```
 
 - You can not see vault file by using simple cat command, If you want to view vault yaml file, 
-```
+```bash
 ansible-vault view httpbyvault.yml
 ```
 
 - To edit an existing vaulted yaml file.
-  ```
+  ```bash
   ansible-vault edit httpbyvault.yml
   ```
 
 - To get a list of options.
-```
+```bash
 ansible-vault --help
 ```
 
 - httpbyvault.yaml file was created with ansible-vault, what about exiting files???
 > To convert simple playbooks into vault playbooks use this command.
-```
+```bash
 vim testbyvault.yml
 ```
-```
+```bash
 ansible-vault encrypt testbyvault.yml
 ```
 
 - Strings/words can be encrypted within a playbook.
-```
+```bash
 ansible-vault encrypt_string httpd
 ```
-```
+```bash
 ansible-vault create/encrypt outputbystring.yml
 ```
 ---
@@ -487,80 +487,80 @@ screenshot
 
 ## Ansible AWX Install (Please note: AWX is deployed from the docker containers)
 - Update the system
-```
+```bash
 yum update -y
 ```
 
 - Reboot
-```
+```bash
 reboot
 ```
 
 - Install epel-release repository
- ```
+ ```bash
 yum install epel-release
  ```
 
 - Install additional packages
-```
+```bash
 dnf install git gcc gcc-c++ ansible nodejs gettext device-mapper-persistent-data lvm2 bzip2 python3-pip
 ```
 
 - Add docker repository
-```
+```bash
 dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 ```
 
 - Install Docker
-```
+```bash
 dnf install docker-ce --nobest -y
 ```
-```
+```bash
 dnf install docker-ce --nobest --allowerasing
 ```
 
 - Check Docker version
-```
+```bash
 docker --version
 ```
 
 - start docker
-```
+```bash
 systemctl start docker
 ```
 
 - Enable docker at boot
-```
+```bash
 systemctl enable docker
 ```
 
 - Install docker-compose
-```
+```bash
 pip3 install docker-compose
 ```
 
 - Verify the docker-compose version
-```
+```bash
 docker-compose --version
 ```
 
 - Set python command to use python3
-```
+```bash
 alternatives --set python /usr/bin/python3
 ```
 
 - Download the latest version of Ansible AWX from the Git Hub repositoy
-```
+```bash
 git clone https://github.com/ansible/awx
 ```
 
 - Generate a secret key for encryption fo the inventory file and copy the output to a text file.
-```
+```bash
 openssl rand -base64 30
 ```
 
 - Change directory to and edit inventory file
-```
+```bash
 awx/installer
 or
 awx/tools/docker-compose
@@ -570,12 +570,12 @@ vim inventory
 > in this file you suppose to change secret_key with that key what you get when you was run openssl command
 - Add or modify the following parameters
 - create directory for postgress
-```
+```bash
 mkdir /var/lib/pgdocker
 ```
 
 - Install AWX
-```
+```bash
 ansible-playbook -i inventory install.yml
 ```
 
@@ -621,11 +621,11 @@ ansible-playbook -i inventory install.yml
  - ansible-inventory
  - - Using the ansible-invetory command provides you with details of your host invetory files
    - It can be useful if you want to get an idea of how your hosts are grouped. For example, run the following:
-   - ```
+   - ```bash
      ansible-inventory -i hosts --graph 
      ```
    - To get a full list of hosts in hosts file
-   - ```
+   - ```bash
      ansible-inventory --list
      ```
   - **ansible-pull**
